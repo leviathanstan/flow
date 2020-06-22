@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: sentinel-flux
+  cloud:
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8888
+server:
+  port: 8080

@@ -1,0 +1,11 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: aid
+  cloud:
+    consul:
+      host: localhost
+      port: 2280
+      discovery:
+        register: true

@@ -1,0 +1,10 @@
+hystrix:
+  # 默认配置见com.netflix.hystrix.HystrixCommandProperties
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+server:
+  port: 8082

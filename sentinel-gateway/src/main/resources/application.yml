@@ -1,0 +1,25 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: sentinel-gateway
+  cloud:
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+        # Add your routes here.
+        - id: product_route #也是sentinel的资源名
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/product/**
+          filters:
+            - RewritePath=/product/(?<segment>.*), /$\{segment}
+        - id: httpbin_route
+          uri: lib://httpbin
+          predicates:
+            - Path=/httpbin/**
+          filters:
+            - RewritePath=/httpbin/(?<segment>.*), /$\{segment}

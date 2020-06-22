@@ -1,0 +1,10 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: sentinel-dual
+  cloud:
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8888

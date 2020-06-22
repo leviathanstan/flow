@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: feign
+  cloud:
+    consul:
+      host: localhost
+      port: 2280
+      discovery:
+        register: true
+feign:
+  hystrix:
+    enabled: true
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 2000
+      fallback:
+        enabled: true
+ribbon:
+  ReadTimeout: 3000
+  ConnectTimeout: 1000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,hystrix.stream

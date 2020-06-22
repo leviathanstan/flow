@@ -1,0 +1,11 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: sentinel-cloud
+  cloud:
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8888
+# -Dproject.name=sentinel-cloud -Dcsp.sentinel.dashboard.server=localhost:8888 -Dcsp.sentinel.api.port=8719

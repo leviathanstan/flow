@@ -1,0 +1,92 @@
+hystrix:
+  # 默认配置见com.netflix.hystrix.HystrixCommandProperties
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 1000
+            interruptOnTimeout: true
+            #在使用queue方法返回的Future的cancel方法时是否对线程进行中断
+            #网上甚至官方wiki上都是这个配置：interruptOnCancel: false，但1.5.x版的源码实际上是下面这个配置
+            interruptOnFutureCancel: false
+          semaphore:
+            maxConcurrentRequests: 10
+        timeout:
+          enabled: true
+      fallback:
+        enable: true
+        isolation:
+          semaphore:
+            maxConcurrentRequests: 10 #fallback方法最高并发数，对两种隔离方式都有效
+      circuitBreaker:
+        enabled: true
+        requestVolumeThreshold: 20
+        sleepWindowInMilliseconds: 5000
+        errorThresholdPercentage: 50
+        forceOpen: false  #会覆盖forceClose
+        forceClosed: false
+      metrics:  #统计信息的窗口配置
+        rollingStats:
+          timeInMilliseconds: 10000
+          # 统计指标一个时间窗口中桶的数目，只有HealthCountsStream是指定桶的大小的，其它都是用这个指定桶数
+          numBuckets: 10
+        # 计算请求延迟百分位的窗口设置，dashboard用
+        rollingPercentile:
+          enabled: true
+          timeInMilliseconds: 60000
+          numBuckets: 6
+          bucketSize: 100
+        # 断路器失败率统计桶的大小(HealthCountsStream)
+        healthSnapshot:
+          intervalInMilliseconds: 500
+      requestCache:
+        enabled: true
+      requestLog:
+        enabled: true
+    # =====对单个commandKey单独配置=======
+    user:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 1000
+            interruptOnTimeout: true
+            interruptOnFutureCancel: false
+          semaphore:
+            maxConcurrentRequests: 10
+        timeout:
+          enabled: true
+  # 默认配置见com.netflix.hystrix.HystrixCollapserProperties
+  collapser:
+    default:
+      maxRequestsInBatch: Integer.MAX_VALUE
+      timerDelayInMilliseconds: 10
+      requestCache:
+        enabled: true
+  # 默认配置见com.netflix.hystrix.HystrixThreadPoolProperties
+  threadpool:
+    default:
+      coreSize: 10
+      maximumSize: 10
+      maxQueueSize: -1
+      #BlockingQueue不支持动态修改大小，所以如果需要动态限制队列的大小可以设置这个选项
+      #当maxQueueSize=-1时，这个就不管用了。当这个比maxQueueSize小，maximumSize也不管用了
+      queueSizeRejectionThreshold: 5
+      keepAliveTimeMinutes: 1
+      # 为true，maximumSize才管用
+      allowMaximumSizeToDivergeFromCoreSize: false
+      #线程池统计指标窗口设置，好像只在dashboard里用
+      metrics:
+        rollingStats:
+          timeInMilliseconds: 10000
+          numBuckets: 10
+# actuator开放Hystrix的健康检查访问
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+server:
+  port: 8085

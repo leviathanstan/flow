@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: zk
+  cloud:
+    zookeeper:
+      enabled: true  # true:开启zookeeper外部化配置, false:读取本地配置;
+      connect-string:
+      max-retries: 2
+      config:
+        root: sentinel
+        enabled: true
+        watcher:
+          enabled: true

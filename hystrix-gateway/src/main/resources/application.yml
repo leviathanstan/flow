@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    consul:
+      ribbon:
+        enabled: true
+      port: 2280
+      host: localhost
+      discovery:
+        register: false
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: aid
+          uri: lb://aid
+          predicates:
+            - Path=/aid/**
+          filters:
+            - RewritePath=/aid/(?<path>.*), /$\{path}
+#            - name: Hystrix
+#              args:
+#                name: fallbackcmd
+#                fallbackUri: forward:/fallback
+      default-filters:
+        - name: Hystrix
+          args:
+            name: cmd
+            fallbackUri: forward:/fallback
+server:
+  port: 8099
+hystrix:
+  command:
+    cmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+      circuitBreaker:
+        enabled: true
+        requestVolumeThreshold: 10
+        errorThresholdPercentage: 50

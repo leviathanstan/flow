@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: turbine
+  cloud:
+    consul:
+      host: localhost
+      port: 2280
+      discovery:
+        register: true
+server:
+  port: 8001
+turbine:
+  appConfig: feign #服务名
+  aggregator:
+    clusterConfig: default
+  clusterNameExpression: "'default'"
